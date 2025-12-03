@@ -1,0 +1,6 @@
+model_name: "gpt2"
+
+seed: 42
+
+fig_path: "../outputs/"
+res_path: "../results/"
