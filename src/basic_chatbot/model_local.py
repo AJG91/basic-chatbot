@@ -94,10 +94,10 @@ class LocalLM():
         model.config.pad_token_id = self.tokenizer.pad_token_id
         return model
     
-    def evaluate_text(
+    def generate_text(
         self,
         prompt: Union[list[str], str],
-        max_new_tokens: int = 60,
+        max_new_tokens: int = 100,
         do_sample: bool = True,
         top_k: int = 25,
         top_p: float = 0.95,
