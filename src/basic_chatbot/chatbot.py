@@ -1,7 +1,9 @@
+from pathlib import Path
 from typing import Union
 from basic_chatbot.model_local import LocalLM
 from basic_chatbot.model_openai import OpenAIChat
 from basic_chatbot.memory import ChatMemory
+from basic_chatbot.logging import log_output
 from basic_chatbot.prompt_utils import build_prompt_with_history, extract_assistant_reply
 
 class MyChat():
@@ -10,16 +12,27 @@ class MyChat():
     """
     def __init__(
         self, 
-        model_name, 
-        n_turns
+        model_name: str, 
+        n_turns: int,
+        state_dir: str,
+        log_dir: str,
+        state_fname: str = "conversation_state.json",
+        log_fname: str = "chat_logs.jsonl"
     ):
         if "openai" in model_name.lower():
             self.lm = OpenAIChat()
         else:
             self.lm = LocalLM(model_name)
 
+        state_path = state_dir + state_fname
+        log_path = log_dir + log_fname
+
         self.memory = ChatMemory()
+        self.memory.load(state_path)
+
         self.n_turns = n_turns
+        self.state_path = state_path
+        self.log_path = log_path
 
     def chat(
         self,
@@ -58,5 +71,7 @@ class MyChat():
         except Exception as e:
             reply = f"[ERROR] {type(e).__name__}: {e}"
 
+        log_output(self.log_path, user_message, reply)
+        self.memory.save(self.state_path)
         chat_history.append({"role": "assistant", "content": reply})
         return chat_history, ""
