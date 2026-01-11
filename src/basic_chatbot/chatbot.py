@@ -1,10 +1,25 @@
-from pathlib import Path
 from typing import Union
 from basic_chatbot.model_local import LocalLM
 from basic_chatbot.model_openai import OpenAIChat
 from basic_chatbot.memory import ChatMemory
+from basic_chatbot.gradio_ui import chat_interface
 from basic_chatbot.logging import log_output
 from basic_chatbot.prompt_utils import build_prompt_with_history, extract_assistant_reply
+
+def MyAssistant(
+    model: str, 
+    n_turns: int, 
+    state_dir: str, 
+    log_dir: str, 
+    share: bool = False, 
+    inline: bool = True
+):
+    """
+    Docstring for MyAssistant
+    """
+    bot = MyChat(model, n_turns, state_dir, log_dir)
+    demo = chat_interface(bot)
+    demo.launch(share=share, inline=inline)
 
 class MyChat():
     """
@@ -59,8 +74,6 @@ class MyChat():
         """
         Docstring for respond
         """
-        reply = str(self.chat(user_message))
-
         if chat_history is None:
             chat_history = []
 
@@ -75,3 +88,8 @@ class MyChat():
         self.memory.save(self.state_path)
         chat_history.append({"role": "assistant", "content": reply})
         return chat_history, ""
+    
+    def clear_chat(self):
+        self.memory.clear_memory(self.state_path)
+        log_output(self.log_path, "Memory cleared", "")
+        return []
