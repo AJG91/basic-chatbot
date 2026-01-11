@@ -1,9 +1,13 @@
 import gradio as gr
     
-def build_demo(bot) -> gr.Blocks:
+def chat_interface(bot) -> gr.Blocks:
+    def clear_chat():
+        if hasattr(bot, "clear_chat"):
+            bot.clear_chat()
+        return [], ""
 
     with gr.Blocks() as demo:
-        gr.Markdown("Chatbot")
+        gr.Markdown("MyAssistant")
         chatbot = gr.Chatbot(type="messages")
         msg = gr.Textbox(label="Message")
 
@@ -11,6 +15,13 @@ def build_demo(bot) -> gr.Blocks:
             lambda m, h: bot.respond(m, h),
             inputs=[msg, chatbot],
             outputs=[chatbot, msg]
+        )
+
+        clear_btn = gr.ClearButton([chatbot, msg])
+        clear_btn.click(
+            fn=clear_chat,
+            inputs=[],
+            outputs=[chatbot, msg],
         )
 
     return demo
