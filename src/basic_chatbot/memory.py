@@ -14,6 +14,10 @@ class ChatMemory:
 
     def last_n_turns(self, n=6):
         return self.turns[-n:]
+    
+    def clear_memory(self, path="conversation_state.json"):
+        self.turns = []
+        self.save(path)
 
     def save(self, path="conversation_state.json"):
         path = Path(path)
