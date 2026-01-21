@@ -26,7 +26,7 @@ If you use this project, please use the citation information provided by GitHub 
 ```bibtex
 @software{Garcia2025BasicChatbot,
   author = {Alberto J. Garcia},
-  title = {Basic conversational chatbot},
+  title = {Basic Conversational Chatbot},
   year = {2025},
   publisher = {GitHub},
   url = {https://github.com/AJG91/basic-chatbot},
