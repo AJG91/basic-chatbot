@@ -1,6 +1,7 @@
 import gradio as gr
     
-def chat_interface(bot) -> gr.Blocks:
+def chat_interface(bot) -> gr.Blocks: 
+    """Creates a UI for the chatbot using Gradio."""
     def clear_chat():
         if hasattr(bot, "clear_chat"):
             bot.clear_chat()

@@ -2,7 +2,8 @@ from pathlib import Path
 import json
 import time
 
-def log_output(path, user_text, assistant_text):
+def log_output(path: str, user_text: str, assistant_text: str):
+    """Logs the time, user's input, and chatbot's output to a JSON file."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
 
