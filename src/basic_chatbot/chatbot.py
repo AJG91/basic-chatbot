@@ -1,4 +1,3 @@
-from typing import Union
 from basic_chatbot.model_local import LocalLM
 from basic_chatbot.model_openai import OpenAIChat
 from basic_chatbot.memory import ChatMemory
@@ -15,7 +14,24 @@ def MyAssistant(
     inline: bool = True
 ):
     """
-    Docstring for MyAssistant
+    Wrapper for the `MyChat` class and `chat_interface` function.
+    Creates an instance of `MyChat` and launches a Gradio UI.
+
+    Parameters
+    ----------
+    model : str
+        Name of model that will be loaded.
+    n_turns : int
+        Number of chat instances saved for context.
+    state_dir : str
+        Directory where the conversation state is saved.
+    log_dir : str
+        Directory where the conversation log is saved.
+    share : bool, optional (default=False)
+        Creates a shareable link if set to True.
+    inline : bool, optional (default=True)
+        Opens Gradio UI inline if set to True.
+        Otherwise, opens a new window for UI.
     """
     bot = MyChat(model, n_turns, state_dir, log_dir)
     demo = chat_interface(bot)
@@ -23,7 +39,34 @@ def MyAssistant(
 
 class MyChat():
     """
-    Docstring for MyChat
+        
+    Attributes
+    ----------
+    lm : LocalLM | OpenAIChat
+        Model that will be used for the chatbot.
+    memory : ChatMemory
+        A class used to keep track of the chatbot's memory.
+    n_turns : int
+        Number of chat instances saved for context.
+    state_path : str
+        Path to directory where the conversation state is saved.
+    log_path : str
+        Path to directory where the log state is saved.
+
+    Parameters
+    ----------
+    model_name : str
+        Name of model that will be loaded.
+    n_turns : int
+        Number of chat instances saved for context.
+    state_dir : str
+        Directory where the conversation state is saved.
+    log_dir : str
+        Directory where the conversation log is saved.
+    state_fname : str, optional (default="conversation_state.json")
+        Name of conversation state JSON file.
+    log_fname : str, optional (default="chat_logs.jsonl")
+        Name of conversation log JSON file.
     """
     def __init__(
         self, 
@@ -50,10 +93,17 @@ class MyChat():
         self.log_path = log_path
 
     def chat(
-        self,
+        self, 
         user_message: str
     ) -> str:
         """
+        Generates an output from the language model using previous `n_turns`.
+        The user message and model response is then passed into the memory class.
+
+        Parameters
+        ----------
+        user_message : str
+            The message from the user.
         """
         prompt = build_prompt_with_history(
             self.memory.last_n_turns(self.n_turns), 
@@ -68,11 +118,24 @@ class MyChat():
     
     def respond(
         self,
-        user_message, 
-        chat_history
-    ) -> Union[list, str]:
+        user_message: str, 
+        chat_history: list | None
+    ) -> tuple[list, str]:
         """
-        Docstring for respond
+        Wrapper for `chat` method.
+        Generates a response from the language model using `user_text` input.
+        Saves the conversation and log state of the chatbot to directory.
+
+        Parameters
+        ----------
+        user_message : str
+            The message from the user.
+        chat_history : list or None
+
+        Returns
+        -------
+        tuple[list, str]
+            Chat history and an empty string.
         """
         if chat_history is None:
             chat_history = []
@@ -89,7 +152,8 @@ class MyChat():
         chat_history.append({"role": "assistant", "content": reply})
         return chat_history, ""
     
-    def clear_chat(self):
+    def clear_chat(self) -> list:
+        "Clears chat memory and returns empty list."
         self.memory.clear_memory(self.state_path)
         log_output(self.log_path, "Memory cleared", "")
         return []

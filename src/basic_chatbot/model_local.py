@@ -4,7 +4,6 @@ from transformers import (
     PreTrainedTokenizerBase, PreTrainedModel
 )
 from transformers.generation.utils import GenerateOutput
-from typing import Union
 from basic_chatbot.utils import get_device, to_device
 
 class LocalLM():
@@ -42,8 +41,8 @@ class LocalLM():
     def tokenize_text(
         self, 
         prompt: str, 
-        padding: Union[bool, str] = True, 
-        truncation: Union[bool, str] = True
+        padding: bool | str = True, 
+        truncation: bool | str = True
     ) -> dict[str, tc.Tensor]:
         """
         Tokenizes a text prompt (or list of prompts) and moves the 
@@ -96,22 +95,22 @@ class LocalLM():
     
     def generate_text(
         self,
-        prompt: Union[list[str], str],
+        prompt: list[str] | str,
         max_new_tokens: int = 100,
         do_sample: bool = True,
         top_k: int = 25,
         top_p: float = 0.95,
         temperature: float = 0.8,
-        repetition_penalty: Union[int, float] = 1.1,
+        repetition_penalty: int | float = 1.1,
         skip_special_tokens: bool = True
-    ) -> Union[tc.Tensor, GenerateOutput]:
+    ) -> tc.Tensor | GenerateOutput:
         """
         Tokenizes an input prompt, puts the model in evaluation model, and generates 
         text based on the given prompt.
         
         Parameters
         ----------
-        prompt : Union[list[str], str]
+        prompt : list[str] or str
             Can be a list of prompts or a single prompt.
         max_new_tokens : int, optional(default=60)
             Total amount of tokens that will be used in the text generation.
@@ -130,7 +129,7 @@ class LocalLM():
             Denotes the fraction of temperature that will be used when sampling.
             Lower T -> more deterministic.
             Higher T -> more random.
-        repetition_penalty : Union[int, float], optional (default=1.1)
+        repetition_penalty : int or float, optional (default=1.1)
             Specifies how much penalty will be added to the model when repeating text.
         skip_special_tokens : bool, optional (default=True)
             If True, skips special tokens such as classification and padding tokens 
