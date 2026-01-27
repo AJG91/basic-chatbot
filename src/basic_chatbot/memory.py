@@ -3,7 +3,7 @@ import json
 
 class ChatMemory:
     """
-    A class for managint the memory of the chatbot.
+    A class for managing the memory of the chatbot.
         
     Attributes
     ----------
