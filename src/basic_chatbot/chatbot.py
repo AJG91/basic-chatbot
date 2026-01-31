@@ -10,6 +10,7 @@ def MyAssistant(
     n_turns: int, 
     state_dir: str, 
     log_dir: str, 
+    api_key: str | None = None,
     share: bool = False, 
     inline: bool = True
 ):
@@ -27,13 +28,15 @@ def MyAssistant(
         Directory where the conversation state is saved.
     log_dir : str
         Directory where the conversation log is saved.
+    api_key : str or None, optional (default=None)
+        API key for OpenAI model.
     share : bool, optional (default=False)
         Creates a shareable link if set to True.
     inline : bool, optional (default=True)
         Opens Gradio UI inline if set to True.
         Otherwise, opens a new window for UI.
     """
-    bot = MyChat(model, n_turns, state_dir, log_dir)
+    bot = MyChat(model, n_turns, state_dir, log_dir, api_key=api_key)
     demo = chat_interface(bot)
     demo.launch(share=share, inline=inline)
 
@@ -67,6 +70,8 @@ class MyChat():
         Name of conversation state JSON file.
     log_fname : str, optional (default="chat_logs.jsonl")
         Name of conversation log JSON file.
+    api_key : str or None, optional (default=None)
+        API key for OpenAI model.
     """
     def __init__(
         self, 
@@ -75,10 +80,11 @@ class MyChat():
         state_dir: str,
         log_dir: str,
         state_fname: str = "conversation_state.json",
-        log_fname: str = "chat_logs.jsonl"
+        log_fname: str = "chat_logs.jsonl",
+        api_key: str | None = None
     ):
         if "openai" in model_name.lower():
-            self.lm = OpenAIChat()
+            self.lm = OpenAIChat(api_key=api_key)
         else:
             self.lm = LocalLM(model_name)
 
