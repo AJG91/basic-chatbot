@@ -7,15 +7,18 @@ def chat_interface(bot) -> gr.Blocks:
             bot.clear_chat()
         return [], ""
 
+    def get_reponse(m, h):
+        return bot.respond(m, h), ""
+
     with gr.Blocks() as demo:
         gr.Markdown("MyAssistant")
         chatbot = gr.Chatbot(type="messages")
         msg = gr.Textbox(label="Message")
 
         msg.submit(
-            lambda m, h: bot.respond(m, h),
+            get_reponse,
             inputs=[msg, chatbot],
-            outputs=[chatbot, msg]
+            outputs=[chatbot, msg],
         )
 
         clear_btn = gr.ClearButton([chatbot, msg])
