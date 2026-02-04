@@ -12,7 +12,7 @@ def MyAssistant(
     log_dir: str, 
     api_key: str | None = None,
     share: bool = False, 
-    inline: bool = True
+    inline: bool = False
 ):
     """
     Wrapper for the `MyChat` class and `chat_interface` function.
@@ -32,7 +32,7 @@ def MyAssistant(
         API key for OpenAI model.
     share : bool, optional (default=False)
         Creates a shareable link if set to True.
-    inline : bool, optional (default=True)
+    inline : bool, optional (default=False)
         Opens Gradio UI inline if set to True.
         Otherwise, opens a new window for UI.
     """
@@ -156,7 +156,7 @@ class MyChat():
         log_output(self.log_path, user_message, reply)
         self.memory.save(self.state_path)
         chat_history.append({"role": "assistant", "content": reply})
-        return chat_history, ""
+        return chat_history
     
     def clear_chat(self) -> list:
         "Clears chat memory and returns empty list."
