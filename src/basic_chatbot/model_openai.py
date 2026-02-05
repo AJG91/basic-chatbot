@@ -1,4 +1,3 @@
-import os
 from typing import Union, List
 from openai import OpenAI
 
@@ -8,32 +7,33 @@ class OpenAIChat:
         
     Attributes
     ----------
-    model : str, optional (default="gpt-3.5-turbo")
+    model : str
         Name of model that will be used.
     client : OpenAI
         OpenAI client that is initialized.
         
     Parameters
     ----------
-    model : str, optional (default="gpt-3.5-turbo")
+    model : str
         Name of model that will be used.
-    api_key : str or None, optional (default=None)
-        OpenAI API key. If None, reads from OPENAI_API_KEY.
+    api_key : str, optional (default=None)
+        OpenAI API key. If None, raises error.
 
     Raises
     ------
     RuntimeError
-        If no API key is provided and OPENAI_API_KEY is not set.
+        If no API key is provided.
     """
     def __init__(
         self, 
-        model: str = "gpt-3.5-turbo",
-        api_key: str | None = None
+        model: str,
+        api_key: str = None
     ):
         if api_key is None:
-            api_key = os.getenv("OPENAI_API_KEY")
+            raise RuntimeError("OPENAI_API_KEY is not set.")
         if not api_key:
             raise RuntimeError("OPENAI_API_KEY is not set.")
+        
         self.client = OpenAI(api_key=api_key)
         self.model = model
 

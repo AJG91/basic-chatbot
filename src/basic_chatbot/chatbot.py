@@ -83,8 +83,8 @@ class MyChat():
         log_fname: str = "chat_logs.jsonl",
         api_key: str | None = None
     ):
-        if "openai" in model_name.lower():
-            self.lm = OpenAIChat(api_key=api_key)
+        if api_key:
+            self.lm = OpenAIChat(model_name, api_key=api_key)
         else:
             self.lm = LocalLM(model_name)
 
